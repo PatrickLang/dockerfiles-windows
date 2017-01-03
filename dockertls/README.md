@@ -122,5 +122,20 @@ Run `/ip cloud set ddns-enabled=yes`, wait a few seconds, then `/ip cloud print`
 ```
 > fakeIP and fakeName will be used in following examples too instead of my real IP & DNS
 
-Once you have a name, 
+Be sure to write down the `dns-name`, you'll need it in the next step.
 
+## Creating CA, Server, and Client certificates
+
+`docker build -t patricklang/openvpn-certs .`
+
+
+```powershell
+mkdir .\CARoot
+mkdir .\UserCert
+mkdir .\ServerSert
+docker run --rm `
+  -e CN=<fakeName> `
+  -v "$(pwd)\CARoot:c:\CARoot" `
+  -v "$(pwd)\UserCert:C:\UserCert" `
+  -v "$(pwd)\ServerCert:C:\ServerCert" patricklang/openvpn-certs
+```
