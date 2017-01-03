@@ -9,6 +9,8 @@ $Global:caPublicKeyFile = ($Global:SSLCARoot + "ca.pem")
 $Global:UserCertPath = "c:\UserCert\"
 $Global:ServerCertPath = "c:\ServerCert\"
 
+$Global:ServerName = $ENV:CN_Server
+# $Global:ClientName = $ENV:CN_Client # TODO if needed
 
 function ensureDirs($dirs) {
   foreach ($dir in $dirs) {
@@ -34,7 +36,7 @@ function createCA(){
 }
 
 # https://docs.docker.com/engine/security/https/
-function createCerts($certsPath, $userPath, $serverName, $ipAddresses) {
+function createCerts($certsPath, $userPath, $serverName) {
   Write-Host "`n=== Reading in CA Private Key Password"
   $Global:caPrivateKeyPass = Get-Content -Path $Global:caPrivateKeyPassFile
 
@@ -45,10 +47,8 @@ function createCerts($certsPath, $userPath, $serverName, $ipAddresses) {
   & openssl req -subj "/CN=$serverName/" -sha256 -new -key server-key.pem -out server.csr
 
   Write-Host "`n=== Signing Server request"
-  "subjectAltName = " + (($ipAddresses.Split(',') | ForEach-Object { "IP:$_" }) -join ',') | Out-File extfile.cnf -Encoding Ascii
-  cat extfile.cnf
   & openssl x509 -req -days 365 -sha256 -in server.csr -CA $Global:caPublicKeyFile -passin $Global:caPrivateKeyPass -CAkey $Global:caPrivateKeyFile `
-    -CAcreateserial -out server-cert.pem -extfile extfile.cnf
+    -CAcreateserial -out server-cert.pem
 
   Write-Host "`n=== Generating Client key"
   & openssl genrsa -out key.pem 4096
@@ -84,4 +84,4 @@ if (  !(Test-Path -Path $Global:caPrivateKeyPassFile) -or
   createCA
 }
 
-createCerts $Global:ServerCertPath $Global:UserCertPath $serverName $ipAddresses
+createCerts $Global:ServerCertPath $Global:UserCertPath $serverName
