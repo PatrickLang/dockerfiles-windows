@@ -96,3 +96,31 @@ docker run --rm `
 * [Dockerfile](https://github.com/StefanScherer/dockerfiles-windows/blob/master/dockertls/Dockerfile)
 * [Protect the Docker daemon socket](https://docs.docker.com/engine/security/https/) docs at docker.com
 * [DockerTLS](https://github.com/Microsoft/Virtualization-Documentation/tree/master/windows-server-container-tools/DockerTLS) in Microsoft/Virtualization-Documentation repo 
+
+
+# Setting up OpenVPN on a Mikrotik router
+
+This is a work-in-progress. Mikrotik's implementation of OpenVPN requires a full certificate chain for both itself as a PPTP server, and clients. The steps are almost identical to setting up Docker for TLS with self-signed certificates.
+
+
+## See also
+* [OpenVPN HOWTO - PKI](https://openvpn.net/index.php/open-source/documentation/howto.html#pki) - the official documentation
+* [Mikrotik OpenVPN Server](https://www.async.fi/2012/01/mikrotik-openvpn-server/) - good guide focused on Windows
+
+
+## Getting DDNS set up
+Mikrotik offers free dynamic DNS hosting.
+
+Run `/ip cloud set ddns-enabled=yes`, wait a few seconds, then `/ip cloud print` will show your DDNS name:
+
+```
+   ddns-enabled: yes
+     update-time: yes
+  public-address: fakeIP
+        dns-name: fakeName.sn.mynetname.net
+          status: updated
+```
+> fakeIP and fakeName will be used in following examples too instead of my real IP & DNS
+
+Once you have a name, 
+
