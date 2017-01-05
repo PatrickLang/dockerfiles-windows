@@ -132,7 +132,7 @@ Be sure to write down the `dns-name`, you'll need it in the next step.
 ```powershell
 mkdir .\CARoot
 mkdir .\UserCert
-mkdir .\ServerSert
+mkdir .\ServerCert
 docker run --rm `
   -e CN=<fakeName> `
   -v "$(pwd)\CARoot:c:\CARoot" `

@@ -23,5 +23,5 @@
 # CMD . .\generate-certs.ps1
 
 FROM stefanscherer/dockertls-windows
-ADD generate-openvpn-certs.ps1
+COPY generate-openvpn-certs.ps1 generate-openvpn-certs.ps1
 CMD . .\generate-openvpn-certs.ps1

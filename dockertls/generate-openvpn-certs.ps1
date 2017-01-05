@@ -73,7 +73,7 @@ function createCerts($certsPath, $userPath, $serverName) {
 }
 
 
-ensureDirs @($Global:ServerCertPath, $Global:UserCertPath, $Global:CARoot)
+ensureDirs @($Global:ServerCertPath, $Global:UserCertPath, $Global:SSLCARoot)
 
 #Test the CA Root path to see if an existing set of CA keys was provided
 if (  !(Test-Path -Path $Global:caPrivateKeyPassFile) -or 
