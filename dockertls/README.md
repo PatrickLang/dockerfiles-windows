@@ -139,3 +139,28 @@ docker run --rm `
   -v "$(pwd)\UserCert:C:\UserCert" `
   -v "$(pwd)\ServerCert:C:\ServerCert" patricklang/openvpn-certs
 ```
+
+## Copy certs to router
+
+
+## Configure PPTP
+From: https://www.async.fi/2012/01/mikrotik-openvpn-server/
+
+```
+root@inhouse-debian:~/ovpn-cert# ssh admin@192.168.1.1
+[admin@MikroTik] > /certificate
+[admin@MikroTik] /certificate> import file=kahara.dyndns.org.crt
+[admin@MikroTik] /certificate> import file=kahara.dyndns.org.pem
+[admin@MikroTik] /certificate> import file=ca.crt
+[admin@MikroTik] /certificate> decrypt
+[admin@MikroTik] /certificate> ..
+[admin@MikroTik] > /interface bridge add name=ovpn-bridge
+[admin@MikroTik] > /interface bridge port add interface=ether2-master-local bridge=ovpn-bridge
+[admin@MikroTik] > /ip address add address=192.168.1.64/24 interface=ovpn-bridge 
+[admin@MikroTik] > /ip pool add name=ovpn-pool ranges=192.168.1.65-192.168.1.99
+[admin@MikroTik] > /ppp profile add bridge=ovpn-bridge name=ovpn-profile remote-address=ovpn-pool
+[admin@MikroTik] > /ppp secret add service=ovpn local-address=192.168.1.64 name=user1 password=pass1 profile=ovpn-profile
+[admin@MikroTik] > /interface ovpn-server server set auth=sha1,md5 certificate=cert1 cipher=blowfish128,aes128,aes192,aes256 default-profile=ovpn-profile enabled=yes keepalive-timeout=disabled max-mtu=1500 mode=ethernet netmask=24 port=1194 require-client-certificate=yes
+[admin@MikroTik] > /ip firewall filter add action=accept chain=input disabled=no protocol=tcp dst-port=1194
+[admin@MikroTik] > /ip firewall filter move 5 destination=1
+```
